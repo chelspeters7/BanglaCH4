@@ -13,15 +13,15 @@ PRO JGR_code
   water_date = water.jul[12:-1]
   water_LWF_delay = water.LWF_delay[*,12:-1]
   ;===========================================
-  ;  ;plot land water fraction and gauge
-  ;  plot_margin = [0.15, 0.25, 0.15, 0.15]
-  ;  YRANGE=[0,40]
-  ;  TICKV = julday(1,1,[2003:2015])
-  ;  XRANGE = [julday(1,1,2003), julday(1,1,2015)]
-  ;  img = plot(water.jul, water.LWF_delay[0,*]*100.0,  '-k2', XTICKUNITS = 'Month', margin=plot_margin, XTICKINTERVAL = 6, axis_style = 1, XRANGE = XRANGE, YRANGE=[0,40], XMinor = 5, name = 'TRMM', Title = 'Surface Water',  YTITLE = "Area Inundated (%)")
-  ;  img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
-  ;  xaxis = AXIS('X', TARGET = img,Location = -3, TICKV = TICKV, TICKUNITS = 'YEARS', Minor = 11,  TICKLEN = 0.01, SUBTICKLEN = 0.008)
-  ;  !null = plot_font(img, 1, YRANGE)
+    ;plot land water fraction and gauge
+    plot_margin = [0.15, 0.25, 0.15, 0.15]
+    YRANGE=[0,40]
+    TICKV = julday(1,1,[2003:2015])
+    XRANGE = [julday(1,1,2003), julday(1,1,2015)]
+    img = plot(water.jul, water.LWF_delay[0,*]*100.0,  '-k2', XTICKUNITS = 'Month', margin=plot_margin, XTICKINTERVAL = 6, axis_style = 1, XRANGE = XRANGE, YRANGE=[0,40], XMinor = 5, name = 'TRMM', Title = 'Surface Water',  YTITLE = "Area Inundated (%)")
+    img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
+    xaxis = AXIS('X', TARGET = img,Location = -3, TICKV = TICKV, TICKUNITS = 'YEARS', Minor = 11,  TICKLEN = 0.01, SUBTICKLEN = 0.008)
+    !null = plot_font(img, 1, YRANGE)
   ;
   ;  ;===========================================
   ;  ;Complete Surface water time series
