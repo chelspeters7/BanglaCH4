@@ -1,61 +1,63 @@
 PRO JGR_code
+; Creates all plots for the JGR 2016 paper
+; Uses the following functions: plot_font, crop, annual, annual2
+  ; Set directory
   CD, '/Users/peterscn/IDL_Library/Code'
+  ;==========================================================================================
+  ; Set colors for plots
   clr = [[136,204, 238] ,[221,2014,119], [170,68,153], [17,119,51], [51,34,136], [204,102,119], [153,153, 51], [68,170,153], [136,34,85]]
-
   ;==========================================================================================
   ;==========================================================================================
   ; Land Water Fraction and Surface Water Gauges
-  RESTORE, FILE = 'TRMM.sav' ; TRMM-TMI data set
-  RESTORE,'Bangla_surface_water.sav' ; Bangladesh surface water gauge data set
-
+  ; import .sav data files
+  RESTORE, FILE = 'TRMM.sav' ; TRMM-TMI dataset
+  RESTORE,FILE = 'Bangla_surface_water.sav' ; Bangladesh surface water gauge dataset
   ;===========================================
   water.LWF_delay[*,WHERE(water.LWF_delay[0,*] GT 0.8)] = !VALUES.F_NAN ;remove pixels that are ocean water
-  water_date = water.jul[12:-1]
+  water_date = water.jul[12:-1] ;create date dataset that matches XCH4 datasets
   water_LWF_delay = water.LWF_delay[*,12:-1]
   ;===========================================
-    ;plot land water fraction and gauge
-;    plot_margin = [0.15, 0.25, 0.15, 0.15]
-;    YRANGE=[0,40]
-;    TICKV = julday(1,1,[2003:2015])
-;    XRANGE = [julday(1,1,2003), julday(1,1,2015)]
-;    img = plot(water.jul, water.LWF_delay[0,*]*100.0,  '-k2', XTICKUNITS = 'Month', margin=plot_margin, XTICKINTERVAL = 6, axis_style = 1, XRANGE = XRANGE, YRANGE=[0,40], XMinor = 5, name = 'TRMM', Title = 'Surface Water',  YTITLE = "Area Inundated (%)")
-;    img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
-;    xaxis = AXIS('X', TARGET = img,Location = -3, TICKV = TICKV, TICKUNITS = 'YEARS', Minor = 11,  TICKLEN = 0.01, SUBTICKLEN = 0.008)
-;    !null = plot_font(img, 1, YRANGE)
-  ;
-  ;  ;===========================================
-  ;  ;Complete Surface water time series
-  ;  img1= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), sw_mean, '-2',color = clr[*,4], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
-  ;  a_wdir = axis('y', color = clr[*,4], target=img1, major=5, minor=9, location='right', textpos=1, tickdir=1, title='Gauge Water Height Anomaly (m)', tickfont_size = 32, tickfont_name = 'Arial');, tickfont_style = "Bold")
-  ;  img3= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), upper, '-', COLOR = clr[*,0], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
-  ;  img4= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), lower, '-', COLOR = clr[*,0], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
-  ;  img5= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), sw_mean, '-2',color = clr[*,4], /OVERPLOT, /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
+  ; plot land water fraction and gauge timeseries
+  plot_margin = [0.15, 0.25, 0.15, 0.15]
+  YRANGE=[0,40]
+  TICKV = julday(1,1,[2003:2015])
+  XRANGE = [julday(1,1,2003), julday(1,1,2015)]
+  img = plot(water.jul, water.LWF_delay[0,*]*100.0,  '-k2', XTICKUNITS = 'Month', margin=plot_margin, XTICKINTERVAL = 6, axis_style = 1, XRANGE = XRANGE, YRANGE=[0,40], XMinor = 5, name = 'TRMM', Title = 'Surface Water',  YTITLE = "Area Inundated (%)")
+  img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
+  xaxis = AXIS('X', TARGET = img,Location = -3, TICKV = TICKV, TICKUNITS = 'YEARS', Minor = 11,  TICKLEN = 0.01, SUBTICKLEN = 0.008)
+  !null = plot_font(img, 1, YRANGE) ;format plot using function "plot_font"
+
+  img1= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), sw_mean, '-2',color = clr[*,4], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
+  a_wdir = axis('y', color = clr[*,4], target=img1, major=5, minor=9, location='right', textpos=1, tickdir=1, title='Gauge Water Height Anomaly (m)', tickfont_size = 32, tickfont_name = 'Arial');, tickfont_style = "Bold")
+  img3= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), upper, '-', COLOR = clr[*,0], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
+  img4= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), lower, '-', COLOR = clr[*,0], /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
+  img5= plot(timegen(1826, UNITS = 'DAYS', START = Julday(1,1,2003)), sw_mean, '-2',color = clr[*,4], /OVERPLOT, /current, axis_style=0, margin=plot_margin, xrange=XRANGE)
 
   ;===========================================
-  ;  ;plot annual land water fraction and gauge
-  ;  TICKV =  TIMEGEN(12, START = Julday(1, 15, 2003), DAYS = [15])
-  ;  XTICKV =  TIMEGEN(12, START = Julday(1, 1, 2003), DAYS = [1], UNITS='Months', STEP_SIZE=1)
-  ;  XRANGE = [julday(1,1,2003), julday(12,31,2003)]
-  ;  img = plot([TICKV[0]-30,TICKV[-1]+30], [0,0], '-2', COLOR = 'light grey', XTICKV = XTICKV, XMinor = 1, XTICKUNITS = 'Month', XTICKINTERVAL = 1, XRANGE = XRANGE, YRANGE = YRANGE, name = 'Bangladesh')
-  ;  img1 = plot(TICKV, annual(water.LWF_delay[0,*]*100.0), /CURRENT, '-2',color = clr[*,4], /overplot, name = 'TRMM', YTITLE = "Area Inundated, %", TITLE = "TRMM")
-  ;  img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
-  ;  img.font_name = 'Arial'
-  ;  img.Background_transparency = 0
-  ;  img.font_size = 18
-  ;  !null = plot_font(img, 1, YRANGE)
+  ; plot annual land water fraction and gauge timeseries
+  TICKV =  TIMEGEN(12, START = Julday(1, 15, 2003), DAYS = [15])
+  XTICKV =  TIMEGEN(12, START = Julday(1, 1, 2003), DAYS = [1], UNITS='Months', STEP_SIZE=1)
+  XRANGE = [julday(1,1,2003), julday(12,31,2003)]
+  img = plot([TICKV[0]-30,TICKV[-1]+30], [0,0], '-2', COLOR = 'light grey', XTICKV = XTICKV, XMinor = 1, XTICKUNITS = 'Month', XTICKINTERVAL = 1, XRANGE = XRANGE, YRANGE = YRANGE, name = 'Bangladesh')
+  img1 = plot(TICKV, annual(water.LWF_delay[0,*]*100.0), /CURRENT, '-2',color = clr[*,4], /overplot, name = 'TRMM', YTITLE = "Area Inundated, %", TITLE = "TRMM")
+  img2 = plot([tickv[0]-30, Tickv[-1]+30], [40, 40], '-2k', /current, /overplot)
+  img.font_name = 'Arial'
+  img.Background_transparency = 0
+  img.font_size = 18
+  !null = plot_font(img, 1, YRANGE)
 
   ;==========================================================================================
   ;==========================================================================================
   ; Satellite data
-  RESTORE,'/data2/ralf/FOR_CHELSEA/all_ch4.sav' ; AIRS, SCIAMACHY, and GOSAT
-
+  RESTORE,'/data2/ralf/FOR_CHELSEA/all_ch4.sav' ; AIRS, SCIAMACHY, and GOSAT structure
+  ; crop datasets to remove unnessary pixels
   aa= mean(mean(crop(airs.dat), /NAN, dimension = 1),dimension = 1, /NAN)
   gg= mean(mean(crop(gosa.dat), /NAN, dimension = 1),dimension = 1, /NAN)
   ss= mean(mean(crop(scia.dat), /NAN, dimension = 1),dimension = 1, /NAN)
-  t = TIMEGEN(N_elements(aa), START=JULDAY(1,15,2003), Units = 'Months')
+  t = TIMEGEN(N_elements(aa), START=JULDAY(1,15,2003), Units = 'Months') ;create dates that correspond to timeseries
 
   ;===========================================
-  ; plot mixing ratios
+  ; Plot mixing ratios (XCH4) as observed from AIRS, SCIAMACHY, and GOSAT over Bangladesh
   TICKV = julday(1,1,[2003:2015])
   XRANGE = [julday(1,1,2003), julday(1,1,2015)]
   YRANGE=[1700,2000]
@@ -67,15 +69,14 @@ PRO JGR_code
   !null = legend(target=[img, img1, img2], font_size = 18, font_name = 'Arial',/AUTO_TEXT_COLOR, shadow = 0, POSITION=[julday(6,1,2017),1800], /DATA)
 
   ;===========================================
-  ;Plot Annual Bangladesh TS
+  ; Plot Annual XCH4 over Bangladesh
   TICKV =  TIMEGEN(12, START = Julday(1, 15, 2003), DAYS = [15])
   XTICKV =  TIMEGEN(3, START = Julday(1, 1, 2003), DAYS = [1], UNITS='Months', STEP_SIZE=6)
-
   XRANGE = [julday(1,1,2003), julday(12,31,2003)]
   img = plot([TICKV[0]-30,TICKV[-1]+30], [0,0], '-2', COLOR = 'light grey', YTICKFORMAT="(A1)", XTICKV = XTICKV, XMinor = 1, XTICKUNITS = 'Month', XTICKINTERVAL = 1, YTICKV = YTICKV, XRANGE = XRANGE, YRANGE = YRANGE, name = 'Bangladesh', /CURRENT, Position = [0.79,0.25,0.9,0.7])
 
   ;AIRS
-  aa_an = annual(aa)
+  aa_an = annual(aa) ;function that reformats dataset into annual average
   img1 = plot(tickv, aa_an, /overplot, /CURRENT,  '2', color= clr[*,8],  name = 'AIRS', Title = ' ')
 
   ;SCIA
@@ -89,11 +90,11 @@ PRO JGR_code
   img.Background_transparency = 0
   img.font_size = 18
   !null = plot_font(img, 1, YRANGE)
-STOP
+  STOP
   ;===========================================
-  ;Plot mixing ratio with error
+  ;Plot XCH4 with error (included in supplementary information)
   ;Percent error
-  a_er = 1.6/100*aa
+  a_er = 1.6/100*aa ;percent error as stated in methods (1.6% for AIRS)
   s_er = 2.0/100*ss
   g_er = 0.8/100*gg
 
@@ -115,35 +116,34 @@ STOP
 
   ;==========================================================================================
   ;==========================================================================================
-  ; HYSPLIT data
-  RESTORE,'/data2/ralf/FOR_CHELSEA/hysp_border.sav' ; HYSPLIT forward and back trajectory plume densities
-
+  ; Load in HYSPLIT forward and backtrajectory data
+  RESTORE, FILE = '/data2/ralf/FOR_CHELSEA/hysp_border.sav' ; HYSPLIT forward and back trajectory plume densities
 
   ;===========================================
   ; HYSPLIT Back Trajectory Density Plot
-  ;    B24 = HYSP.B24
-  ;    B24[WHERE(B24[*,*,*] EQ 0)] = !VALUES.F_NAN
-  ;    ANB24 = ANNUAL2(B24)
-  ;
-  ;    ;24 HOURS
-  ;    MYWINDOW = WINDOW(WINDOW_TITLE='24 HOURS')
-  ;    MONTHS = ['JAN','FEB','MAR','APR','MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-  ;    FOR II = 0, 11 DO BEGIN
-  ;      LAYOUTT = [4,3,[II+1]]
-  ;      TTT = MONTHS[II]
-  ;      IMG = IMAGE(ANB24[*,*,II], /CURRENT, LAYOUT = LAYOUTT,$
-  ;        LIMIT=[0,50,50,120],  RGB_TABLE=62, GRID_UNITS=2, XRANGE=[50,120], YRANGE=[0,50],$
-  ;        IMAGE_LOCATION=[-180,-90], IMAGE_DIMENSIONS=[360,180], AXIS_STYLE = 2, TITLE = TTT, FONT_NAME = 'ARIAL', MARGIN = 0.1)
-  ;      M = MAPCONTINENTS(/COUNTRIES, /HIRES, THICK = 1)
-  ;      IMG.FONT_NAME = 'ARIAL'
-  ;      IMG.TITLE.FONT_SIZE = 24
-  ;      IMG.TITLE.FONT_STYLE = "BOLD"
-  ;      IMG.BACKGROUND_TRANSPARENCY = 0
-  ;      IMG.FONT_SIZE = 18
-  ;    ENDFOR
+      B24 = HYSP.B24 ; can subsitute this for b48, b72, b96, f24, f48 to get the other forward and backward trajectory density plots
+      B24[WHERE(B24[*,*,*] EQ 0)] = !VALUES.F_NAN ; remove invalid data
+      ANB24 = ANNUAL2(B24) ; find the annual average
+  
+      ;24 HOURS
+      MYWINDOW = WINDOW(WINDOW_TITLE='24 HOURS')
+      MONTHS = ['JAN','FEB','MAR','APR','MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+      FOR II = 0, 11 DO BEGIN
+        LAYOUTT = [4,3,[II+1]]
+        TTT = MONTHS[II]
+        IMG = IMAGE(ANB24[*,*,II], /CURRENT, LAYOUT = LAYOUTT,$
+          LIMIT=[0,50,50,120],  RGB_TABLE=62, GRID_UNITS=2, XRANGE=[50,120], YRANGE=[0,50],$
+          IMAGE_LOCATION=[-180,-90], IMAGE_DIMENSIONS=[360,180], AXIS_STYLE = 2, TITLE = TTT, FONT_NAME = 'ARIAL', MARGIN = 0.1)
+        M = MAPCONTINENTS(/COUNTRIES, /HIRES, THICK = 1)
+        IMG.FONT_NAME = 'ARIAL'
+        IMG.TITLE.FONT_SIZE = 24
+        IMG.TITLE.FONT_STYLE = "BOLD"
+        IMG.BACKGROUND_TRANSPARENCY = 0
+        IMG.FONT_SIZE = 18
+      ENDFOR
 
   ;===========================================
-  ; HYSPLIT Residence Time
+  ; HYSPLIT Residence Time Plot
   TICKV = julday(1,1,[2003:2015])
   XRANGE = [julday(1,1,2003), julday(1,1,2015)]
   YRANGE=[10,40]
@@ -153,7 +153,7 @@ STOP
   !null = plot_font(img, 1, YRANGE)
 
   ;===========================================
-  ; AIRS Regions (AIRS XCH4 x HYSPLIT density)
+  ; AIRS Regions (AIRS XCH4 x HYSPLIT density), find the XCH4 increase over Bangladesh by weighting by the plume density. See equation 1 in text. 
   asd = FLTARR(7,144)
   asd[0,*] = TOTAL(TOTAL((airs.dat*hysp.b96),1),1)
   asd[1,*] = TOTAL(TOTAL((airs.dat*hysp.b72),1),1)
@@ -239,7 +239,7 @@ STOP
   reg_CT=FLTARR(96)
   FOR i=0,95 DO BEGIN
     IF MIN(asd[2:*,i]) EQ 0 THEN CONTINUE
-   ; reg_CT[i]=REGRESS(FINDGEN(5)*24-48,REFORM(asd[2:*,i])) ; dppb/dhr  ; regression slope over +/- 48 hrs...
+    ; reg_CT[i]=REGRESS(FINDGEN(5)*24-48,REFORM(asd[2:*,i])) ; dppb/dhr  ; regression slope over +/- 48 hrs...
     reg_CT[i]=REFORM(asd[5,i]-asd[3,i])/48                             ; or maybe (b24-f24) / 48?
   ENDFOR
 
@@ -265,7 +265,7 @@ STOP
   !null = plot_font(img, 1, YRANGE)
   ;!null = legend(target=[img2,img, img3, img5], font_size = 18, font_name = 'Arial',/AUTO_TEXT_COLOR, shadow = 0, POSITION=[tickv[10],-1], /DATA)
 
- ; ===========================================
+  ; ===========================================
   ;plot mean concentration increase over Bangladesh
   TICKV = julday(1,1,[2003:2015])
   XRANGE = [julday(1,1,2003), julday(1,1,2015)]
@@ -283,7 +283,7 @@ STOP
 
 
   ;===========================================
-  ; plot smoothed versions of above
+  ; plot smoothed versions of above using a 3 month moving average
   airs_smooth = smooth(reg_airs*hysp.t_res, 3, /nan)
   rm_airs_smooth =MEAN(dim=2,REFORM(airs_smooth,12,12))
   scia_smooth = smooth(reg_scia*hysp.t_res, 3, /nan)
@@ -303,7 +303,6 @@ STOP
   ; img5 = plot(tickv, rm_CT_smooth, '2', color= clr[*,4], /overplot, XTICKV = XTICKV, XMinor = 1, XTICKUNITS = 'Month', XTICKINTERVAL = 1, XRANGE = XRANGE, YRANGE = YRANGE, name = 'CarbonTracker', Ytitle = " ", TITLE = ' ') ; concentration increase over Bangladesh ppb
   !null = plot_font(img, 1, YRANGE)
 
-
   TICKV = julday(1,1,[2003:2015])
   XRANGE = [julday(1,1,2003), julday(1,1,2015)]
   img4 = plot([t[0]-15, t[-1]+15], [0.0,0.0], '2', color = 'gray', /CURRENT, Position = [0.1,0.25,0.75,0.7])
@@ -315,7 +314,6 @@ STOP
   !null = plot_font(img, 1, YRANGE)
   !null = legend(target=[img2,img,img3], font_size = 18, font_name = 'Arial',/AUTO_TEXT_COLOR, shadow = 0, POSITION=[tickv[12],-5], /DATA)
 
-  STOP
   ;===========================================
   ;Plot Difference
   ;See ralf_all_data
@@ -463,7 +461,7 @@ STOP
   print, 'Negative means make smaller', s-mean(ORESULT_S)
   print, 'Negative means make smaller', g-mean(ORESULT_G)
   print, 'Negative means make smaller', c-mean(ORESULT_C)
-STOP
+  STOP
   ;============================================================================================================================================================
   ;plot ALL
   TICKV = julday(1,1,[2003:2015])
