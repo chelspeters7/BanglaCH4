@@ -12,6 +12,8 @@ PRO JGR_code
   ; import .sav data files
   RESTORE, FILE = 'TRMM.sav' ; TRMM-TMI dataset
   RESTORE,FILE = 'Bangla_surface_water.sav' ; Bangladesh surface water gauge dataset
+  
+  STOP
   ;===========================================
   water.LWF_delay[*,WHERE(water.LWF_delay[0,*] GT 0.8)] = !VALUES.F_NAN ;remove pixels that are ocean water
   water_date = water.jul[12:-1] ;create date dataset that matches XCH4 datasets
