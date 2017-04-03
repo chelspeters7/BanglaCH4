@@ -319,7 +319,7 @@ PRO JGR_code
   ;===========================================
   ;Plot Difference
   ;See ralf_all_data
-  RESTORE, 'ralf_all_data.sav'
+  ;RESTORE, 'ralf_all_data.sav'
 
   a_dif_an = rm_airs_smooth;rm_airs*hysp.t_res
   s_dif_an = rm_scia_smooth;rm_scia*hysp.t_res
